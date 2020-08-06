@@ -2,11 +2,7 @@ const { Router } = require('express');
 // const RateLimit = require('express-rate-limit');
 // const MongoStore = require('rate-limit-mongo');
 
-// const {
-    //   API_KEY,
-    //   DATABASE_URL,
-    // } = process.env;
-
+const { API_KEY, DATABASE_URL } = process.env;
 
 const LogEntry = require('../models/LogEntry');
 
@@ -33,10 +29,10 @@ router.get('/', async (req, res, next) => {
 
 router.post('', async (req, res, next) => {
   try {
-    // if(req.get('X-API-KEY') !== API_KEY) {
-        //   res.status(401);
-        //   throw new Error('UnAuthorized');
-        // }
+    if (req.get('X-API-KEY') !== API_KEY) {
+      res.status(401);
+      throw new Error('UnAuthorized');
+    }
     const logEntry = new LogEntry(req.body);
     const createdEntry = await logEntry.save();
     res.json(createdEntry);
